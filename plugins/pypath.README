@@ -1,0 +1,37 @@
+PyPATH Plugin
+
+This plugin allows inline execution of Python expressions and statements 
+within a PATH program. This makes creating useful programs in PATH much 
+easier.
+
+@ SYMBOL: PYTHON EXPRESSION
+
+This symbol "escapes" into Python expression mode. Every character 
+between this and the next "@" it encounters will be evaluated as a 
+Python expression. The results will be stored in the following way:
+
+If the result is an integer: the result is stored in the current memory 
+cell.
+
+If the result is a float: the result is rounded and stored in the 
+current memory cell.
+
+If the result is a string: the string is stored starting in the current 
+memory cell and working up, terminated by an 0.
+
+If the result is anything else: nothing happens (yet)
+
+% SYMBOL: PYTHON STATEMENT
+
+This symbol "escapes" into Python statement mode. Every character 
+between this and the next "@" it encounters will be executed as a Python 
+statement. (The results will not be stored in any way.) This allows you 
+to use print, etc. from within your program.
+
+ACCESSING PATH MEMORY AND PROGRAM DATA
+
+PyPATH also provides a minimal way to access the PATH program/memory 
+cells/etc. from within @ and % blocks through the Python pathobj object. 
+The most important data attributes are pathobj.mem, the array of memory 
+cells, and pathobj.p, the index of the current memory cell. Check out 
+the source code of the path interpreter for a full list of atributes.

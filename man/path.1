@@ -1,0 +1,103 @@
+.TH path 1 "February 2004" PATH "PATH Programming Language"
+.SH NAME
+path \- PATH programming language
+.SH SYNOPSIS
+.B path [ -dhn ] [ -p
+.I dir
+.B ]
+.I file ...
+.SH DESCRIPTION
+PATH is a unique two-dimensional programming language. Unlike conventional programming languages, which read a program in left-to-right, top-to-bottom, PATH programs can go up, down, left, and right, and change directions at will. The capabilities of the language can also be extended through the use of plugins.
+.SH OPTIONS
+.TP
+.B \-d --debug
+Print out extra information about program execution to stderr.
+.TP
+.B \-h --help
+Display a help screen and quit.
+.TP
+.B \-n --noplugins
+Don't load any plugins.
+.TP
+.B \-p dir --plugindir dir
+Load plugins from the directory dir instead of the default location.
+.RE
+.SH FILES
+.I /usr/lib/path/
+.RS
+System\-wide directory for PATH plugins. Plugins for all users go here.
+.RE
+.I ~/.path/
+.RS
+User\-specific directory for PATH plugins. Individual users may place plugins here.
+.SH LANGUAGE REFERENCE
+A PATH program has only a minimal environment to run: an array of unlimited integers ("memory cells"), and standard input and output. The program can input and/or ouput ASCII values from the cells, increment/decrement cells, seek between different cells, and branch off in different directions if the current cell is not equal to 0.
+.P
+The PATH interpreter starts at the first "$" character in the program file and starts heading right, reading every character (or
+.I "instruction symbol"
+) in its way. The interpreter behaves accordingly when it encounters one of these valid instruction symbols:
+.P
+.B $
+\- Start the program here, heading right.
+.RE
+.B #
+\- End the program.
+.RE
+.B +
+\- Increment the current memory cell.
+.RE
+.B \-
+\- Decrement the current memory cell.
+.RE
+.B }
+\- Move to the next memory cell.
+.RE
+.B {
+\- Move to the previous memory cell.
+.RE
+.B ,
+\- Input an ASCII character from standard input into the current memory cell.
+.RE
+.B .
+\- Output an ASCII character from the current memory cell into standard output.
+.RE
+.B /
+\- If heading in direction:
+.RE
+	right, turn up
+.RE
+	down, turn left
+.RE
+	left, turn down
+.RE
+	up, turn right
+.RE
+.B \\\\
+\- If heading in direction:
+.RE
+	right, turn down
+.RE
+	down, turn right
+.RE
+	left, turn up
+.RE
+	up, turn left
+.RE
+.B ^
+\- If the value of the current memory cell is not 0, turn up.
+.RE
+.B <
+\- If the value of the current memory cell is not 0, turn left.
+.RE
+.B >
+\- If the value of the current memory cell is not 0, turn right.
+.RE
+.B v
+\- If the value of the current memory cell is not 0, turn down.
+.RE
+.B !
+\- Jump over the next symbol.
+.P
+If the PATH interpreter does not understand a symbol, it simply passes over it without taking any action. Plugins may also add additional symbols with extra functionality.
+.SH AUTHOR
+Francis Rogers <exorcismtongs@users.sf.net>
