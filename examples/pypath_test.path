@@ -1,13 +1,13 @@
 #!/usr/bin/env path
 
 $\
-//                                                                     /  \
-\ @"You can use the '"+chr(64)+"' symbol to enter Python expressions "@>.\
-  /  \                                                                 \}/
-   /.< @".llec yromem tnerruc eht ni derots stluser eht evah dna"@        /
-   \}/                                                                     /}\
-  \ @" If the result is a string, it will be stored in the memory cells "@ >./
+//                                                                                /\
+\ "\"You can use the '@' symbol to read a zero terminated string from memory, \""@ >.\
+  /  \                                                                             \}/
+   /.< @""\ eht ni stluser eht erots dna ,noisserpxe nohtyP a sa ti etaulave"\"   /
+   \}/                                                                  /}\
+  \ "\"current memory cell. If the result is a string, it will be \""@  >./
  /}\
- \.< @".detanimret-orez ,llec tnerruc eht htiw gnitrats ,seulav IICSA sa"@ /
+ \.<       @""\.uoy rof gnirts detanimret-orez a sa yromem ni derots"\" /
 
-   \ %print " You can also use the '"+chr(37)+"' symbol to execute Python statements directly."%#
+   \ "print \" You can also use the '%' symbol to execute Python statements similarly.\""%#

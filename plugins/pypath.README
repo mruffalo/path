@@ -6,9 +6,9 @@ easier.
 
 @ SYMBOL: PYTHON EXPRESSION
 
-This symbol "escapes" into Python expression mode. Every character 
-between this and the next "@" it encounters will be evaluated as a 
-Python expression. The results will be stored in the following way:
+A zero-terminated string is read starting at the current memory location 
+and the string is evaluated as a Python expression The results are 
+returned as follows:
 
 If the result is an integer: the result is stored in the current memory 
 cell.
@@ -23,10 +23,8 @@ If the result is anything else: nothing happens (yet)
 
 % SYMBOL: PYTHON STATEMENT
 
-This symbol "escapes" into Python statement mode. Every character 
-between this and the next "@" it encounters will be executed as a Python 
-statement. (The results will not be stored in any way.) This allows you 
-to use print, etc. from within your program.
+A zero-terminated string is read starting at the current memory location
+and the string is executed as a Python statement. 
 
 ACCESSING PATH MEMORY AND PROGRAM DATA
 

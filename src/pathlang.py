@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-#
 # PATH interpreter
 # Copyright (c) 2003-04 Francis Rogers
 #
@@ -38,6 +36,7 @@ class path:
     # plugins: array of plug-in objects for the interpreter to use
     # func_in: function to use for input
     # func_out: function to use for output
+    # plug_lock: plugin the interpreter is locked on
     # verbose: if true, enable debug messages
     
     def __init__(self):
@@ -49,6 +48,7 @@ class path:
 
         self.func_in = sys.stdin.read
         self.func_out = sys.stdout.write
+        self.plug_lock = None
         
         self.plugins = []
 
@@ -122,6 +122,10 @@ class path:
                     self.prog[l] += " "
         self.reset()
     
+    def lock(self, plugin):
+        """Lock the interpreter on a specific plugin. (Use path.lock(None) to unlock.)"""
+        self.plug_lock = plugin
+        
     def redefine_io(self, infunc, outfunc):
         """Redefine the input and output functions used by the , and . symbols.
 
@@ -162,13 +166,15 @@ class path:
 
         if self.s == True:
             self.s = False
+        elif self.plug_lock != None:
+            self.plug_lock.call(self)
         elif self.runplugins() == False:
-            cursym
+            0
         elif cursym == '$':
             self.debug("Start")
         elif cursym == '#':
             self.debug("End")
-            return 1
+            return True
         elif cursym == '!':
             self.s = True
             self.debug("Skip next symbol")
@@ -250,6 +256,6 @@ class path:
                 raise IndexError
         except IndexError:
             self.debug("Ran off the side")
-            return 1
+            return True
 
-        return 0
+        return False

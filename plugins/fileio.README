@@ -1,0 +1,16 @@
+File I/O Plugin
+
+This plugin allows you to redirect the , and . symbols to read and write
+to a file.
+
+& SYMBOL: OPEN/CLOSE FILE
+
+A filename is read as a zero-terminated string from the current memory
+pointer location upwards and the corresponding file is opened. The , symbol
+now reads from that file and the . symbol writes to it. To close the file
+and return to standard input and output, call & when the current memory
+cell is zero.
+
+Note: If there is an error reading the file, or there was an error opening
+the file, the . call will return zero. (There isn't any error checking yet,
+sorry.)

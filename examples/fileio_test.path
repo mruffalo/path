@@ -1,0 +1,5 @@
+#!/usr/bin/env path
+
+$ "fileio_test.txt" & "Testing file I/O."' \
+/                                      &"" /
+\ "Check fileio_test.txt."' #

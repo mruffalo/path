@@ -1,0 +1,19 @@
+String Plugin
+
+This plugin allows you to easily handle and output zero-terminated strings.
+
+" SYMBOL: STRING CONSTANT
+
+All characters following this symbol, up to the next '"', are 
+saved into memory starting at the current memory pointer location upwards, 
+ending with a zero. The following escape sequences are also available:
+
+\n: newline
+\": quote
+\\: backslash
+
+' SYMBOL: OUTPUT STRING
+
+The character with the ASCII value of the current memory location is 
+outputted, then the next memory location is outputted, etc... ending when 
+a zero if found.

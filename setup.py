@@ -10,7 +10,7 @@ for plugin in os.listdir('plugins'):
         plugins.append(os.path.join('plugins', plugin))
 
 setup(name="path",
-      version="0.32",
+      version="0.33",
       description="PATH programming language",
       author="Francis Rogers",
       author_email="exorcismtongs@users.sf.net",
