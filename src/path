@@ -51,7 +51,7 @@ def path_main():
         path_usage()
     for f in args:
         prog = path()
-        prog.loadfile(f)
+        prog.load_prog_file(f)
         if noplugins != True:
             path_loadplugins(prog, plugdir)
         prog.verbose = verbose
@@ -62,7 +62,7 @@ def path_main():
 
 def path_loadplugins(prog, plugdir):
     """Load plugins from plugin directories."""
-    plugindirs = ["/usr/lib/path", "~/.path", "./plugins"]
+    plugindirs = ["/usr/lib/path", "~/.path"]
     
     if plugdir != "":
         plugindirs = []

@@ -44,15 +44,15 @@ class pypath:
             else:
                 self.py_buffer += cursym
                 return False
-	elif cursym == '@':
-		pathobj.debug("Started Python expression")
-		self.py_eval_active = True
-		return False
-	elif cursym == '%':
-		pathobj.debug("Started Python statement")
-		self.py_exec_active = True
-		return False
-	else:
-		return True
+        elif cursym == '@':
+            pathobj.debug("Started Python expression")
+            self.py_eval_active = True
+            return False
+        elif cursym == '%':
+            pathobj.debug("Started Python statement")
+            self.py_exec_active = True
+            return False
+        else:
+            return True
 
 glob_path.addplugin(pypath())

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# PATH Interpreter v0.3
+# PATH interpreter
 # Copyright (c) 2003-04 Francis Rogers
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -36,8 +36,9 @@ class path:
     # mem: array of memory cells
     # prog: 2-dimensional array of characters that make up the program
     # plugins: array of plug-in objects for the interpreter to use
+    # func_in: function to use for input
+    # func_out: function to use for output
     # verbose: if true, enable debug messages
-
     
     def __init__(self):
         """Initialize the class."""
@@ -45,37 +46,49 @@ class path:
         self.PATH_DIRECTION_DOWN = 2
         self.PATH_DIRECTION_LEFT = 3
         self.PATH_DIRECTION_UP = 4
+
+        self.func_in = sys.stdin.read
+        self.func_out = sys.stdout.write
         
         self.plugins = []
 
-    def reset(self):
-        """Reset the program state and restart the program."""
-        self.x = 0
-        self.y = 0
-        self.p = 0
-        self.d = self.PATH_DIRECTION_RIGHT
-        self.s = False
-        self.mem = [0]
-        self.verbose = False
-
-        for ny in range(len(self.prog)):
-            for nx in range(len(self.prog[ny])):
-                if self.prog[ny][nx] == '$':
-                    self.y = ny
-                    self.x = nx
+    def __add__(self, x):
+        """Step thru x symbols. Return false if end of program encountered."""
+        ret = 0
+        for i in range(x):
+            ret = self.step()
+            if ret == false:
+                return ret
+        return ret
 
     def addplugin(self, plugin):
         """This method is called internally by plugins.
 
         (To add a plugin to the interpreter: 'execfile(plugin, {"glob_path":prog})') """
         self.plugins.append(plugin)
+    
+    def debug(self, msg):
+        """Print a debug message."""
+        if self.verbose == True:
+            self.errprint("(" + str(self.x) + "," + str(self.y) + ") " + msg)
+    
+    def dir2string(self, d):
+        """Get the string representation of a direction id."""
+        if d == self.PATH_DIRECTION_RIGHT:
+            return "right"
+        elif d == self.PATH_DIRECTION_DOWN:
+            return "down"
+        elif d == self.PATH_DIRECTION_LEFT:
+            return "left"
+        elif d == self.PATH_DIRECTION_UP:
+            return "up"
 
     def errprint(self, msg):
         """Print a message to stderr."""
         sys.stderr.write(os.path.basename(sys.argv[0]) + ": " + msg + "\n")
-
-    def loadfile(self, filename):
-        """Load a program into the interpreter."""
+                    
+    def load_prog_file(self, filename):
+        """Load a new program file into the interpreter."""
         try:
             file = open(filename, 'r')
             self.prog = file.readlines()
@@ -94,24 +107,51 @@ class path:
             self.errprint("can't open file '" + filename + "'")
             sys.exit(1)
         self.reset()
+                    
+    def load_prog_array(self, progarray):
+        """Load a new program directly into the interpreter."""
+        self.prog = progarray
+
+        longest = 0
+        for l in self.prog:
+            if len(l) > longest:
+                longest = len(l)
+        for l in range(len(self.prog)):
+            if len(self.prog[l]) < longest:
+                for i in range(longest - len(self.prog[l])):
+                    self.prog[l] += " "
+        self.reset()
     
-    def dir2string(self, d):
-        """Change a direction id to a string."""
-        if d == self.PATH_DIRECTION_RIGHT:
-            return "right"
-        elif d == self.PATH_DIRECTION_DOWN:
-            return "down"
-        elif d == self.PATH_DIRECTION_LEFT:
-            return "left"
-        elif d == self.PATH_DIRECTION_UP:
-            return "up"
+    def redefine_io(self, infunc, outfunc):
+        """Redefine the input and output functions used by the , and . symbols.
+
+        (Defaults are sys.stdin.read for input and sys.stdout.write for output."""
+        self.func_in = infunc
+        self.func_out = outfunc
     
-    def debug(self, msg):
-        """Print a debug message."""
-        if self.verbose == True:
-            self.errprint("(" + str(self.x) + "," + str(self.y) + ") " + msg)
+    def reset(self):
+        """Reset the program state and restart the program."""
+        self.x = 0
+        self.y = 0
+        self.p = 0
+        self.d = self.PATH_DIRECTION_RIGHT
+        self.s = False
+        self.mem = [0]
+        self.verbose = False
+
+        for ny in range(len(self.prog)):
+            for nx in range(len(self.prog[ny])):
+                if self.prog[ny][nx] == '$':
+                    self.y = ny
+                    self.x = nx
     
+    def run(self):
+        """Run the entire program."""
+        while self.step() == 0:
+            1
+        
     def runplugins(self):
+        """Run all the loaded plugins on the current symbol."""
         for plugin in self.plugins:
             if plugin.call(self) == False:
                 return False
@@ -188,10 +228,10 @@ class path:
                 self.mem[self.p] = 255
             self.debug("Decremented memory cell " + str(self.p) + " to " + str(self.mem[self.p]))
         elif cursym == ',':
-            self.mem[self.p] = ord(sys.stdin.read(1))
+            self.mem[self.p] = ord(self.func_in(1))
             self.debug("Inputted " + str(self.mem[self.p]) + " to memory cell " + str(self.p))
         elif cursym == '.':
-            sys.stdout.write(chr(self.mem[self.p]))
+            self.func_out(chr(self.mem[self.p]))
             self.debug("Outputted " + str(self.mem[self.p]) + " from memory cell " + str(self.p))
 
         if self.d == self.PATH_DIRECTION_RIGHT:
@@ -213,17 +253,3 @@ class path:
             return 1
 
         return 0
-    
-    def run(self):
-        """Run the entire program."""
-        while self.step() == 0:
-            1
-
-    def __add__(self, x):
-        """Step thru x symbols. Return false if end of program encountered."""
-        ret = 0
-        for i in range(x):
-            ret = self.step()
-            if ret == false:
-                return ret
-        return ret
