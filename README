@@ -1,4 +1,4 @@
-PATH v0.3
+PATH v0.31
 Copyright (c) 2003-04 Francis Rogers
 
 *** About ***
@@ -15,9 +15,8 @@ http://pathlang.sf.net/
 NOTE: The PATH interpreter now requires Python to run. Make sure you've
 got it installed.
 
-To install the interpreter, run the script "./install.sh". This will
-install the PATH interpreter, default plugins, and man pages. You can then
-invoke the interpreter with "path".
+To install the interpreter, run "python setup.py install". You should 
+then be able to invoke the interpreter with "path".
 
 After installation, you may want to read the PATH manual with "man path".
 
