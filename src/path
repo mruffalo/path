@@ -21,70 +21,50 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+from argparse import ArgumentParser
 import sys
 import os
-import getopt
+from os.path import join as ospj
 from pathlang import Path
 
 def path_main():
-    """Command line interpreter for the PATH programming language."""
-    try:
-        opts, args = getopt.gnu_getopt(sys.argv[1:], "dhnp:", ["debug", "help", "noplugins", "plugindir"])
-    except getopt.GetoptError:
-        path_usage()
-    verbose = False
-    noplugins = False
-    plugdir = ""
-    for o, a in opts:
-        if o in ("-d", "--debug"):
-            verbose = True
-        if o in ("-h", "--help"):
-            path_usage()
-        if o in ("-n", "--noplugins"):
-            noplugins = True
-        if o in ("-p", "--plugindir"):
-            if plugdir == "":
-                plugdir = a
-            else:
-                plugdir += "," + a
-    if len(args) == 0:
-        path_usage()
-    for f in args:
+    """
+    Command line interpreter for the PATH programming language.
+    """
+    p = ArgumentParser()
+    p.add_argument('-d', '--debug', action='store_true', help='print debug messages to stderr')
+    p.add_argument('-n', '--noplugins', action='store_true', help='disable all plugins')
+    p.add_argument('-p', '--plugindir', action='append', help='load plugins from directory DIR instead')
+    p.add_argument('file', nargs='+')
+    args = p.parse_args()
+    for f in args.file:
         prog = Path()
         prog.load_prog_file(f)
-        if noplugins != True:
-            path_load_plugins(prog, plugdir)
-        prog.verbose = verbose
+        if not args.noplugins:
+            path_load_plugins(prog, args.plugindir)
+        prog.verbose = args.debug
         try:
             prog.run()
         except KeyboardInterrupt:
             sys.exit()
 
-def path_load_plugins(prog, plugdir):
-    """Load plugins from plugin directories."""
+def path_load_plugins(prog, plugin_dir_override):
+    """
+    Load plugins from plugin directories.
+
+    :param prog: Path interpreter object
+    :param plugin_dir_override: List of plugin directories, None or [] specifies to use defaults
+    """
     plugindirs = ["/usr/lib/path", "~/.path"]
     
-    if plugdir != "":
-        plugindirs = []
-        for plugindir in plugdir.split(","):
-            if os.access(plugindir, os.F_OK):
-                plugindirs.append(plugindir)
+    if plugin_dir_override:
+        plugindirs = [d for d in plugin_dir_override if os.access(d, os.F_OK)]
     for plugindir in plugindirs:
         if os.access(plugindir, os.F_OK):
             for plugin in os.listdir(plugindir):
-                if plugin.endswith(".py") == True:
-                    exec(compile(open(plugindir + "/" + plugin).read(), plugindir + "/" + plugin, 'exec'), {"glob_path" : prog})
-
-def path_usage():
-    """Usage info for the interpreter."""
-    print("Usage: " + sys.argv[0] + " [options] [-p dir] file")
-    print("")
-    print("options:")
-    print("  -d, --debug          print debug messages to stderr")
-    print("  -h, --help           show this help message and exit")
-    print("  -n, --noplugins      disable all plugins")
-    print("  -p, --plugindir=DIR  load plugins from directory DIR instead")
-    sys.exit()
+                if plugin.endswith(".py"):
+                    with open(ospj(plugindir, plugin)) as p:
+                        exec(compile(p.read(), ospj(plugindir, plugin), 'exec'), {"glob_path": prog})
 
 if __name__ == "__main__":
     path_main()
