@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import sys
 import os
 from distutils.core import setup
 
@@ -16,8 +15,8 @@ setup(name="path",
       author_email="exorcismtongs@users.sf.net",
       url="http://pathlang.sf.net/",
       package_dir={'': 'src'},
-      py_modules = ['pathlang'],
-      scripts = ['src/path'],
+      py_modules=['pathlang'],
+      scripts=['src/path'],
       data_files=[('/usr/share/man/man1/', ['doc/path.1']),
                   ('/usr/lib/path/', plugins)]
     )

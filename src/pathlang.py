@@ -22,7 +22,7 @@
 import sys
 import os
 
-class path:
+class Path:
     """Implementation of the PATH programming language in Python."""
 
     # This class uses the following data attributes:
@@ -57,7 +57,7 @@ class path:
         ret = 0
         for i in range(x):
             ret = self.step()
-            if ret == false:
+            if not ret:
                 return ret
         return ret
 
@@ -69,7 +69,7 @@ class path:
     
     def debug(self, msg):
         """Print a debug message."""
-        if self.verbose == True:
+        if self.verbose:
             self.errprint("(" + str(self.x) + "," + str(self.y) + ") " + msg)
     
     def dir2string(self, d):
@@ -152,24 +152,24 @@ class path:
     def run(self):
         """Run the entire program."""
         while self.step() == 0:
-            1
+            pass
         
     def runplugins(self):
         """Run all the loaded plugins on the current symbol."""
         for plugin in self.plugins:
-            if plugin.call(self) == False:
+            if not plugin.call(self):
                 return False
     
     def step(self):
         """Step through a single symbol of the program. Return false if end of program encountered."""
         cursym = self.prog[self.y][self.x]
 
-        if self.s == True:
+        if self.s:
             self.s = False
-        elif self.plug_lock != None:
+        elif self.plug_lock is not None:
             self.plug_lock.call(self)
-        elif self.runplugins() == False:
-            0
+        elif not self.runplugins():
+            pass
         elif cursym == '$':
             self.debug("Start")
         elif cursym == '#':
@@ -225,12 +225,12 @@ class path:
                 self.debug("New direction: " + self.dir2string(self.d))
         elif cursym == '+':
             self.mem[self.p] += 1
-            if (self.mem[self.p] == 256):
+            if self.mem[self.p] == 256:
                 self.mem[self.p] = 0
             self.debug("Incremented memory cell " + str(self.p) + " to " + str(self.mem[self.p]))
         elif cursym == '-':
             self.mem[self.p] -= 1
-            if (self.mem[self.p] == -1):
+            if self.mem[self.p] == -1:
                 self.mem[self.p] = 255
             self.debug("Decremented memory cell " + str(self.p) + " to " + str(self.mem[self.p]))
         elif cursym == ',':

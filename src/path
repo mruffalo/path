@@ -24,7 +24,7 @@
 import sys
 import os
 import getopt
-from pathlang import path
+from pathlang import Path
 
 def path_main():
     """Command line interpreter for the PATH programming language."""
@@ -50,17 +50,17 @@ def path_main():
     if len(args) == 0:
         path_usage()
     for f in args:
-        prog = path()
+        prog = Path()
         prog.load_prog_file(f)
         if noplugins != True:
-            path_loadplugins(prog, plugdir)
+            path_load_plugins(prog, plugdir)
         prog.verbose = verbose
         try:
             prog.run()
         except KeyboardInterrupt:
             sys.exit()
 
-def path_loadplugins(prog, plugdir):
+def path_load_plugins(prog, plugdir):
     """Load plugins from plugin directories."""
     plugindirs = ["/usr/lib/path", "~/.path"]
     

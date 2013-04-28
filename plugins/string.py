@@ -2,7 +2,7 @@
 # This plugin adds string literals and string output to PATH programs.
 # (c) 2004 Francis Rogers. License is the same as that for the PATH interpreter.
 
-class string:
+class String:
     """String literals and string output plugin."""
     def __init__(self):
         self.string_active = False
@@ -11,8 +11,8 @@ class string:
 
     def call(self, pathobj):
         cursym = pathobj.prog[pathobj.y][pathobj.x]
-        if self.string_active == True:
-            if self.string_escape == True:
+        if self.string_active:
+            if self.string_escape:
                 if cursym == '\\':
                     self.string_buffer += '\\'
                 elif cursym == 'n':
@@ -58,4 +58,4 @@ class string:
         else:
             return True
 
-glob_path.addplugin(string())
+glob_path.addplugin(String())

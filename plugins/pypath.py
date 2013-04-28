@@ -2,7 +2,7 @@
 # This plugin offers inline execution of Python expressions and statements in a PATH program.
 # (c) 2004 Francis Rogers. License is the same as that for the PATH interpreter.
 
-class pypath:
+class PyPath:
     """Plugin that allows inline execution of Python expressions and statements."""
     def __init__(self):
         self.py_buffer = ""
@@ -44,4 +44,4 @@ class pypath:
         return self.py_buffer
         
 
-glob_path.addplugin(pypath())
+glob_path.addplugin(PyPath())

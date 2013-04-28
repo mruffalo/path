@@ -2,7 +2,7 @@
 # This plugin lets you redirect input and output to a file.
 # (c) 2004 Francis Rogers. License is the same as that for the PATH interpreter.
 
-class fileio:
+class FileIO:
     """Plugin that redirects input and output to a file."""
     def __init__(self):
         self.file_active = False
@@ -59,4 +59,4 @@ class fileio:
         except IOError:
             return 0
 
-glob_path.addplugin(fileio())
+glob_path.addplugin(FileIO())

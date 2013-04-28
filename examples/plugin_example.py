@@ -20,7 +20,7 @@ PATH_DIRECTION_LEFT = 3
 PATH_DIRECTION_UP = 4
 
 # Class for the plugin.
-class exampleplugin:
+class ExamplePlugin:
     """Plugin description"""
     def __init__(self):
         # Initialize stuff for your plugin here.
@@ -60,4 +60,4 @@ class exampleplugin:
             return True
 
 # This line adds the plugin to the interpreter.
-glob_path.addplugin(exampleplugin())
+glob_path.addplugin(ExamplePlugin())
