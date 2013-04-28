@@ -159,6 +159,7 @@ class Path:
         for plugin in self.plugins:
             if not plugin.call(self):
                 return False
+        return True
     
     def step(self):
         """Step through a single symbol of the program. Return false if end of program encountered."""
