@@ -24,7 +24,7 @@
 from argparse import ArgumentParser
 import sys
 import os
-from os.path import join as ospj
+from os.path import expanduser, join as ospj
 from pathlang import Path
 
 def path_main():
@@ -55,10 +55,11 @@ def path_load_plugins(prog, plugin_dir_override):
     :param prog: Path interpreter object
     :param plugin_dir_override: List of plugin directories, None or [] specifies to use defaults
     """
-    plugindirs = ["/usr/lib/path", "~/.path"]
+    plugindirs = ["/usr/lib/path", expanduser("~/.path")]
 
     if plugin_dir_override:
-        plugindirs = [d for d in plugin_dir_override if os.access(d, os.F_OK)]
+        expanded = [expanduser(path) for path in plugindirs]
+        plugindirs = [d for d in expanded if os.access(d, os.F_OK)]
     for plugindir in plugindirs:
         if os.access(plugindir, os.F_OK):
             for plugin in os.listdir(plugindir):
