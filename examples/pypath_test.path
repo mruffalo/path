@@ -10,4 +10,4 @@ $\
  /}\
  \.<       @""\.uoy rof gnirts detanimret-orez a sa yromem ni derots"\" /
 
-   \ "print \" You can also use the '%' symbol to execute Python statements similarly.\""%#
+   \ "print(\" You can also use the '%' symbol to execute Python statements similarly.\")"%#
