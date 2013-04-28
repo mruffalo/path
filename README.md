@@ -1,35 +1,40 @@
 PATH v0.33
 Copyright (c) 2003-04 Francis Rogers
 
-*** About ***
+About
+=====
 
 PATH is a programming language based on the Brainf*ck language. Unlike
 conventional programming languages, PATH programs travel in four
 directions, similarly to Befunge.
 
-For more information on the PATH language, visit: 
+For more information on the PATH language, visit:
 http://pathlang.sf.net/
 
-*** Installation ***
+Installation
+============
 
-PATH requires Python to install and run. Make sure you've got it installed 
-first.
+PATH requires Python to install and run. Make sure you've got it installed
+first. PATH runs on Python 3 and possibly also Python 2 (recent changes have
+not been tested on Python 2).
 
-To install the interpreter, run "python setup.py install". You should 
+To install the interpreter, run "python setup.py install". You should
 then be able to invoke the interpreter with "path".
 
 After installation, you may want to read the PATH manual with "man path".
 
-*** Plugins ***
+Plugins
+=======
 
 The PATH language can be extended with interpreter plugins. You may put
 the plugins in /usr/lib/path or ~/.path/ ; see the path man page for
 details.
 
-There are multiple plugins included with PATH. Check the various 
+There are multiple plugins included with PATH. Check the various
 plugins/*.README files for details on how to use them.
 
-*** License ***
+License
+=======
 
 Copyright (c) 2003-04 Francis Rogers
 
