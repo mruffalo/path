@@ -6,7 +6,7 @@ class PyPath:
     """Plugin that allows inline execution of Python expressions and statements."""
     def __init__(self):
         self.py_buffer = ""
-        
+
     def call(self, pathobj):
         cursym = pathobj.prog[pathobj.y][pathobj.x]
         if cursym == '@':
@@ -32,7 +32,7 @@ class PyPath:
             return False
         else:
             return True
-        
+
     def getstr(self, pathobj):
         self.py_buffer = ""
         i = pathobj.p
@@ -42,6 +42,6 @@ class PyPath:
             if i > len(pathobj.mem) - 1:
                 pathobj.mem.append(0)
         return self.py_buffer
-        
+
 
 glob_path.addplugin(PyPath())

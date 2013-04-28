@@ -56,7 +56,7 @@ def path_load_plugins(prog, plugin_dir_override):
     :param plugin_dir_override: List of plugin directories, None or [] specifies to use defaults
     """
     plugindirs = ["/usr/lib/path", "~/.path"]
-    
+
     if plugin_dir_override:
         plugindirs = [d for d in plugin_dir_override if os.access(d, os.F_OK)]
     for plugindir in plugindirs:

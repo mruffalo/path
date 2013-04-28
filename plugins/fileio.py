@@ -13,7 +13,7 @@ class FileIO:
 
     def call(self, pathobj):
         cursym = pathobj.prog[pathobj.y][pathobj.x]
-        
+
         if cursym == '&':
             filename = ""
             i = pathobj.p
@@ -50,7 +50,7 @@ class FileIO:
             return self.openfile.read(1)
         except IOError:
             return 0
-        
+
     def fileout(self, char):
         try:
             if self.file_broke == True:

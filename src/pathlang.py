@@ -38,7 +38,7 @@ class Path:
     # func_out: function to use for output
     # plug_lock: plugin the interpreter is locked on
     # verbose: if true, enable debug messages
-    
+
     def __init__(self):
         """Initialize the class."""
         self.PATH_DIRECTION_RIGHT = 1
@@ -49,7 +49,7 @@ class Path:
         self.func_in = sys.stdin.read
         self.func_out = sys.stdout.write
         self.plug_lock = None
-        
+
         self.plugins = []
 
     def __add__(self, x):
@@ -66,12 +66,12 @@ class Path:
 
         (To add a plugin to the interpreter: 'execfile(plugin, {"glob_path":prog})') """
         self.plugins.append(plugin)
-    
+
     def debug(self, msg):
         """Print a debug message."""
         if self.verbose:
             self.errprint("(" + str(self.x) + "," + str(self.y) + ") " + msg)
-    
+
     def dir2string(self, d):
         """Get the string representation of a direction id."""
         if d == self.PATH_DIRECTION_RIGHT:
@@ -86,7 +86,7 @@ class Path:
     def errprint(self, msg):
         """Print a message to stderr."""
         sys.stderr.write(os.path.basename(sys.argv[0]) + ": " + msg + "\n")
-                    
+
     def load_prog_file(self, filename):
         """Load a new program file into the interpreter."""
         try:
@@ -107,7 +107,7 @@ class Path:
             self.errprint("can't open file '" + filename + "'")
             sys.exit(1)
         self.reset()
-                    
+
     def load_prog_array(self, progarray):
         """Load a new program directly into the interpreter."""
         self.prog = progarray
@@ -121,18 +121,18 @@ class Path:
                 for i in range(longest - len(self.prog[l])):
                     self.prog[l] += " "
         self.reset()
-    
+
     def lock(self, plugin):
         """Lock the interpreter on a specific plugin. (Use path.lock(None) to unlock.)"""
         self.plug_lock = plugin
-        
+
     def redefine_io(self, infunc, outfunc):
         """Redefine the input and output functions used by the , and . symbols.
 
         (Defaults are sys.stdin.read for input and sys.stdout.write for output."""
         self.func_in = infunc
         self.func_out = outfunc
-    
+
     def reset(self):
         """Reset the program state and restart the program."""
         self.x = 0
@@ -148,19 +148,19 @@ class Path:
                 if self.prog[ny][nx] == '$':
                     self.y = ny
                     self.x = nx
-    
+
     def run(self):
         """Run the entire program."""
         while self.step() == 0:
             pass
-        
+
     def runplugins(self):
         """Run all the loaded plugins on the current symbol."""
         for plugin in self.plugins:
             if not plugin.call(self):
                 return False
         return True
-    
+
     def step(self):
         """Step through a single symbol of the program. Return false if end of program encountered."""
         cursym = self.prog[self.y][self.x]
