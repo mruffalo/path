@@ -70,7 +70,7 @@ class Path:
     def debug(self, msg):
         """Print a debug message."""
         if self.verbose:
-            self.errprint("(" + str(self.x) + "," + str(self.y) + ") " + msg)
+            self.errprint("({},{}) {}".format(self.x, self.y, msg))
 
     def dir2string(self, d):
         """Get the string representation of a direction id."""
@@ -87,39 +87,32 @@ class Path:
         """Print a message to stderr."""
         sys.stderr.write(os.path.basename(sys.argv[0]) + ": " + msg + "\n")
 
+    def normalize_line_length(self):
+        if any(len(l) for l in self.prog):
+            longest = max(len(l) for l in self.prog)
+            for l in range(len(self.prog)):
+                # "{:{}}" works as a format string too, but I prefer
+                # using explicit indices when nesting fields
+                self.prog[l] = '{0:{1}}'.format(self.prog[l], longest)
+
     def load_prog_file(self, filename):
         """Load a new program file into the interpreter."""
         try:
-            file = open(filename, 'r')
-            self.prog = file.readlines()
-            if self.prog[0][0:2] == "#!":
+            with open(filename) as f:
+                self.prog = f.readlines()
+            if self.prog[0].startswith("#!"):
                 self.prog = self.prog[1:]
 
-            longest = 0
-            for l in self.prog:
-                if len(l) > longest:
-                    longest = len(l)
-            for l in range(len(self.prog)):
-                if len(self.prog[l]) < longest:
-                    for i in range(longest - len(self.prog[l])):
-                        self.prog[l] += " "
+            self.normalize_line_length()
         except IOError:
-            self.errprint("can't open file '" + filename + "'")
+            self.errprint("can't open file '{}'".format(filename))
             sys.exit(1)
         self.reset()
 
     def load_prog_array(self, progarray):
         """Load a new program directly into the interpreter."""
         self.prog = progarray
-
-        longest = 0
-        for l in self.prog:
-            if len(l) > longest:
-                longest = len(l)
-        for l in range(len(self.prog)):
-            if len(self.prog[l]) < longest:
-                for i in range(longest - len(self.prog[l])):
-                    self.prog[l] += " "
+        self.normalize_line_length()
         self.reset()
 
     def lock(self, plugin):
@@ -151,7 +144,7 @@ class Path:
 
     def run(self):
         """Run the entire program."""
-        while self.step() == 0:
+        while not self.step():
             pass
 
     def runplugins(self):
@@ -162,7 +155,12 @@ class Path:
         return True
 
     def step(self):
-        """Step through a single symbol of the program. Return false if end of program encountered."""
+        """
+        Step through a single symbol of the program.
+
+        Returns True if end of program encountered, False if
+        another step should be executed.
+        """
         cursym = self.prog[self.y][self.x]
 
         if self.s:
@@ -183,11 +181,11 @@ class Path:
             self.p += 1
             if self.p > len(self.mem) - 1:
                 self.mem.append(0)
-            self.debug("New memory cell: " + str(self.p))
+            self.debug("New memory cell: {}".format(self.p))
         elif cursym == '{':
             if self.p > 0:
                 self.p -= 1
-            self.debug("New memory cell: " + str(self.p))
+            self.debug("New memory cell: {}".format(self.p))
         elif cursym == '/':
             if self.d == self.PATH_DIRECTION_RIGHT:
                 self.d = self.PATH_DIRECTION_UP
@@ -197,7 +195,7 @@ class Path:
                 self.d = self.PATH_DIRECTION_DOWN
             elif self.d == self.PATH_DIRECTION_UP:
                 self.d = self.PATH_DIRECTION_RIGHT
-            self.debug("New direction: " + self.dir2string(self.d))
+            self.debug("New direction: {}".format(self.dir2string(self.d)))
         elif cursym == '\\':
             if self.d == self.PATH_DIRECTION_RIGHT:
                 self.d = self.PATH_DIRECTION_DOWN
@@ -207,39 +205,39 @@ class Path:
                 self.d = self.PATH_DIRECTION_UP
             elif self.d == self.PATH_DIRECTION_UP:
                 self.d = self.PATH_DIRECTION_LEFT
-            self.debug("New direction: " + self.dir2string(self.d))
+            self.debug("New direction: {}".format(self.dir2string(self.d)))
         elif cursym == '>':
             if self.mem[self.p] != 0:
                 self.d = self.PATH_DIRECTION_RIGHT
-                self.debug("New direction: " + self.dir2string(self.d))
+                self.debug("New direction: {}".format(self.dir2string(self.d)))
         elif cursym == 'v':
             if self.mem[self.p] != 0:
                 self.d = self.PATH_DIRECTION_DOWN
-                self.debug("New direction: " + self.dir2string(self.d))
+                self.debug("New direction: {}".format(self.dir2string(self.d)))
         elif cursym == '<':
             if self.mem[self.p] != 0:
                 self.d = self.PATH_DIRECTION_LEFT
-                self.debug("New direction: " + self.dir2string(self.d))
+                self.debug("New direction: {}".format(self.dir2string(self.d)))
         elif cursym == '^':
             if self.mem[self.p] != 0:
                 self.d = self.PATH_DIRECTION_UP
-                self.debug("New direction: " + self.dir2string(self.d))
+                self.debug("New direction: {}".format(self.dir2string(self.d)))
         elif cursym == '+':
             self.mem[self.p] += 1
             if self.mem[self.p] == 256:
                 self.mem[self.p] = 0
-            self.debug("Incremented memory cell " + str(self.p) + " to " + str(self.mem[self.p]))
+            self.debug("Incremented memory cell {} to {}".format(self.p, self.mem[self.p]))
         elif cursym == '-':
             self.mem[self.p] -= 1
             if self.mem[self.p] == -1:
                 self.mem[self.p] = 255
-            self.debug("Decremented memory cell " + str(self.p) + " to " + str(self.mem[self.p]))
+            self.debug("Decremented memory cell {} to {}".format(self.p, self.mem[self.p]))
         elif cursym == ',':
             self.mem[self.p] = ord(self.func_in(1))
-            self.debug("Inputted " + str(self.mem[self.p]) + " to memory cell " + str(self.p))
+            self.debug("Inputted {} to memory cell {}".format(self.mem[self.p], self.p))
         elif cursym == '.':
             self.func_out(chr(self.mem[self.p]))
-            self.debug("Outputted " + str(self.mem[self.p]) + " from memory cell " + str(self.p))
+            self.debug("Outputted {} from memory cell {}".format(self.mem[self.p], self.p))
 
         if self.d == self.PATH_DIRECTION_RIGHT:
             self.x += 1
