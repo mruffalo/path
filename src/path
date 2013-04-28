@@ -73,17 +73,17 @@ def path_loadplugins(prog, plugdir):
         if os.access(plugindir, os.F_OK):
             for plugin in os.listdir(plugindir):
                 if plugin.endswith(".py") == True:
-                    execfile(plugindir + "/" + plugin , {"glob_path" : prog})
+                    exec(compile(open(plugindir + "/" + plugin).read(), plugindir + "/" + plugin, 'exec'), {"glob_path" : prog})
 
 def path_usage():
     """Usage info for the interpreter."""
-    print "Usage: " + sys.argv[0] + " [options] [-p dir] file"
-    print ""
-    print "options:"
-    print "  -d, --debug          print debug messages to stderr"
-    print "  -h, --help           show this help message and exit"
-    print "  -n, --noplugins      disable all plugins"
-    print "  -p, --plugindir=DIR  load plugins from directory DIR instead"
+    print("Usage: " + sys.argv[0] + " [options] [-p dir] file")
+    print("")
+    print("options:")
+    print("  -d, --debug          print debug messages to stderr")
+    print("  -h, --help           show this help message and exit")
+    print("  -n, --noplugins      disable all plugins")
+    print("  -p, --plugindir=DIR  load plugins from directory DIR instead")
     sys.exit()
 
 if __name__ == "__main__":

@@ -48,7 +48,7 @@ class exampleplugin:
 
             # Print out how many times this has been used
             self.count += 1
-            print self.count
+            print(self.count)
 
             # If you return False, the interpreter will stop processing the
             # current symbol and move on to the next one. Good for redefining
